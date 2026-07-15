@@ -1,2 +1,2 @@
 # P2TN2
-P2TN2: Democratizing In-Network DNN Deployment beyond Toy Models via Lookup Tables Enabled by the Pareto Principle
+P2TN2: Democratizing The Deployment of Better In-Network DNN via Lookup Tables Enabled by Pareto Principle
