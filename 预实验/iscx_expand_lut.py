@@ -101,7 +101,7 @@ for s in range(0, len(X_lut2m), bs):
     for i in range(len(Xb)): cnt[(tuple(X_lut2m[s+i]), int(preds[i]))] += 1
 print(f"   Initial LUT: {len(cnt):,} entries")
 items_initial = sorted(cnt.items(), key=lambda x: x[1], reverse=True)
-pd.DataFrame([(str(k),v) for (k,_),v in items_initial], columns=['key','count']).to_csv(BASE/'pareto_results'/'ISCX_LUT_initial_1.2M.csv', index=False)
+pd.DataFrame([(str(k),v) for k,v in items_initial], columns=['key','count']).to_csv(BASE/'pareto_results'/'ISCX_LUT_initial_1.2M.csv', index=False)
 torch.cuda.empty_cache()
 
 # ===== 5. 扩展: 额外100w → 扩充LUT =====
@@ -120,7 +120,7 @@ for s in range(0, len(X_ex), bs):
 torch.cuda.empty_cache()
 
 items = sorted(cnt.items(), key=lambda x: x[1], reverse=True)
-pd.DataFrame([(str(k),v) for (k,_),v in items], columns=['key','count']).to_csv(BASE/'pareto_results'/'ISCX_LUT_expanded_2.2M.csv', index=False)
+pd.DataFrame([(str(k),v) for k,v in items], columns=['key','count']).to_csv(BASE/'pareto_results'/'ISCX_LUT_expanded_2.2M.csv', index=False)
 print(f"   Expanded LUT: {len(items):,} entries")
 
 # ===== 6. 帕累托图(初始+扩展两张) =====
