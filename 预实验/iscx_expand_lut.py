@@ -180,6 +180,6 @@ print(f"LUT Acc={acc_lut*100:.2f}% Prec={p*100:.2f}% Recall={r*100:.2f}% F1={f1*
 
 pd.Series({
     'dnn_acc':dnn_acc,'lut_hit':ht,'lut_acc':acc_lut,'lut_prec':p,'lut_rec':r,'lut_f1':f1,
-    'lut_entries':n,'train_2M':len(X_tr),'test':len(y_te),'lut_2M_pareto':len(X_lut2m),'extra_1M':len(X_ex)
+    'lut_entries':len(items),'train_2M':len(X_tr),'test':len(y_te),'lut_2M_pareto':len(X_lut2m),'extra_1M':len(X_ex)
 }).to_csv(OUT/'ISCX_expanded_results.csv')
 print(f"\nDone: {OUT}/")
