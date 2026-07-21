@@ -157,29 +157,33 @@ make_pareto_plot(items, total_exp, '02_Expanded_LUT_2.2M')
 
 # 不再需要旧的counts变量
 del items_initial  # free memory
-# ===== 7. LUT测试(10% holdout) 四指标 =====
+# ===== 7. LUT测试(10% holdout) 初始+扩展 =====
+def test_lut(items, name):
+    lut0=set(); lut1=set()
+    for (key,out),_ in items: (lut0 if out==0 else lut1).add(key)
+    y_pred=np.zeros(len(y_te),dtype=int); hits=0
+    for i in range(len(X_te)):
+        k=tuple(X_te[i])
+        if k in lut0: y_pred[i]=0; hits+=1
+        elif k in lut1: y_pred[i]=1; hits+=1
+        else: y_pred[i]=1-y_te[i]
+    ht=hits/len(y_te); acc=(y_pred==y_te).mean()
+    p,r,f1,_=precision_recall_fscore_support(y_te,y_pred,average='weighted')
+    print(f"\n   === {name} ===")
+    print(f"   Hit: {ht*100:.1f}%")
+    print(classification_report(y_te,y_pred,target_names=['NonVPN','VPN']))
+    print(f"   Acc={acc*100:.2f}% Prec={p*100:.2f}% Recall={r*100:.2f}% F1={f1*100:.2f}%")
+    return ht,acc,p,r,f1
+
 print("\n7. LUT test on 10% holdout...")
-lut0=set(); lut1=set()
-for (key,out),_ in items: (lut0 if out==0 else lut1).add(key)
-y_pred=np.zeros(len(y_te),dtype=int); hits=0
-for i in range(len(X_te)):
-    k=tuple(X_te[i])
-    if k in lut0: y_pred[i]=0; hits+=1
-    elif k in lut1: y_pred[i]=1; hits+=1
-    else: y_pred[i]=1-y_te[i]
+r_init = test_lut(items_initial, 'Initial LUT (1.2M)')
+r_exp  = test_lut(items, 'Expanded LUT (2.2M)')
 
-ht=hits/len(y_te); acc_lut=(y_pred==y_te).mean()
-p,r,f1,_=precision_recall_fscore_support(y_te,y_pred,average='weighted')
+# 保存结果
+pd.DataFrame([
+    {'Experiment':'Initial LUT (1.2M)','LUT_entries':len(items_initial),'Hit':f'{r_init[0]*100:.1f}%','Acc':f'{r_init[1]*100:.2f}%','Prec':f'{r_init[2]*100:.2f}%','Recall':f'{r_init[3]*100:.2f}%','F1':f'{r_init[4]*100:.2f}%'},
+    {'Experiment':'Expanded LUT (2.2M)','LUT_entries':len(items),'Hit':f'{r_exp[0]*100:.1f}%','Acc':f'{r_exp[1]*100:.2f}%','Prec':f'{r_exp[2]*100:.2f}%','Recall':f'{r_exp[3]*100:.2f}%','F1':f'{r_exp[4]*100:.2f}%'},
+    {'Experiment':'DNN (baseline)','LUT_entries':'-','Hit':'-','Acc':f'{dnn_acc*100:.2f}%','Prec':f'{dnn_p*100:.2f}%','Recall':f'{dnn_r*100:.2f}%','F1':f'{dnn_f1*100:.2f}%'},
+]).to_csv(OUT/'ISCX_DNN_results.csv', index=False)
 
-print(f"\n   Hit: {ht*100:.1f}%")
-print(f"\n=== DNN (baseline) ===")
-print(classification_report(y_te,te_pred,target_names=['NonVPN','VPN']))
-print(f"\n=== LUT Classification ===")
-print(classification_report(y_te,y_pred,target_names=['NonVPN','VPN']))
-print(f"LUT Acc={acc_lut*100:.2f}% Prec={p*100:.2f}% Recall={r*100:.2f}% F1={f1*100:.2f}%")
-
-pd.Series({
-    'dnn_acc':dnn_acc,'lut_hit':ht,'lut_acc':acc_lut,'lut_prec':p,'lut_rec':r,'lut_f1':f1,
-    'lut_entries':len(items),'train_2M':len(X_tr),'test':len(y_te),'lut_2M_pareto':len(X_lut2m),'extra_1M':len(X_ex)
-}).to_csv(OUT/'ISCX_expanded_results.csv')
 print(f"\nDone: {OUT}/")
