@@ -1,0 +1,3 @@
+Experiment,LUT_data,LUT_entries,LUT_Hit,LUT_Acc,LUT_Prec,LUT_Recall,LUT_F1,DNN_Acc,DNN_Prec,DNN_Recall,DNN_F1,Train,Test,Pareto_80pct,Pareto_Top20
+"Initial LUT (60% of 2M, 1.2M)",1.2M,67030,96.1%,94.60%,94.77%,94.60%,94.66%,97.88%,97.88%,97.88%,97.88%,600K,200K,217,95.1%
+Expanded LUT (1.2M + 1M extra),2.2M,101940,96.9%,95.41%,95.49%,95.41%,95.44%,97.88%,97.88%,97.88%,97.88%,600K,200K,216,95.7%
