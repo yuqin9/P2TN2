@@ -19,7 +19,7 @@ Convert protocol header fields to binary representation, count feature pattern f
 | `MAWI_3f_7.5M.png` | MAWI backbone (3 fields, 40bit, 7.5M packets) |
 | `MAWI_8f_full.png` | MAWI backbone (8 fields, 104bit, 3.55M packets full) |
 | `USTC_3f.png` | USTC app traffic (3 fields, 40bit, 110K packets) |
-| `CIC-IDS-2017_13f.png` | CIC-IDS 2017 (13 flow features, 3.46M flows) |
+| `CIC-IDS-2017_9f.png` | CIC-IDS 2017 (9 low-cardinality flow features, 3.46M flows) |
 | `NSL-KDD_8f.png` | NSL-KDD (8 categorical features, 148K flows) |
 | `UNSW-NB15_7f.png` | UNSW-NB15 (7 categorical features, 257K flows) |
 | `IOT23_field_comparison.png` | IOT23 field count comparison (3f/5f/6f/8f) |
@@ -34,6 +34,10 @@ Convert protocol header fields to binary representation, count feature pattern f
 2. **IOT23 eth_type 全零**: `val_to_bits()` 无法解析 `'0x0800'` 十六进制字符串, 含 eth_type 的
    三张表 (12f / 8f_noFlags / 8f_noWin) 中该字段 16 bit 恒为 0。
 3. **ISCX DNN 5 特征全零**: 见 `../ISCX_Inference_LUT/README.md`。
+4. **CIC 13 字段原始值版无帕累托**: v1 的 CIC 键是 7 组量化编码（源 CSV 已删除，无法复现），
+   帕累托是量化带来的假象；用原始 13 字段重建后独特率 67.6%（连续实值字段粒度过细），
+   Top20% 仅覆盖 45.9%。论文图改用 9 个低基数字段（Destination Port + Fwd/Bwd Header Length
+   + 6 个 flag 计数）重建，80% 覆盖 3,136 模式 (1.0%)、Top20% 91.5%。
 
 修复版 (原始值 '|' 键、float64 精确编码) 位于 `../v2_rerun/` (本地),
 重跑图片在 `v2_rerun/final_plots_v2/compact/`, 特征清单见 `v2_rerun/features_actual.csv`。
