@@ -16,6 +16,12 @@ Train a DNN classifier on ISCX VPN traffic, build a Lookup Table (LUT) from mode
 - v1 (含编码错误): DNN Accuracy 97.88%, LUT Hit Rate 96.9%, LUT Accuracy 95.41%
 - v2 (float64 重编码修复): DNN Accuracy 99.99%, LUT Hit Rate 96.4%, LUT Accuracy 96.42%
 
+### 3. CTU-13 Sample Analysis (`CTU13_sample_analysis/`)
+Three-sample-size comparison (30K / 100K / 1.1M packets) for the CTU-13 Pareto figure.
+- Finding: 4 of the 6 local pcaps are pure DoS flood recordings (98-100% single-pattern ICMP/UDP floods), so larger samples give *smaller* n80 (45 → 7 → 3) — n80/n90 are set by the number of flood patterns, not sample size
+- Paper keeps the 30K sample (n80=45, n90=657); official full-day captures with background traffic available at mcfp.felk.cvut.cz for future expansion
+- See `CTU13_sample_analysis/README.md` for the full phenomenon description
+
 ## ⚠️ 勘误
 
 v1 存在两类编码错误 (详见 `DataAggregationPareto/README.md` 与 `ISCX_Inference_LUT/README.md`):
